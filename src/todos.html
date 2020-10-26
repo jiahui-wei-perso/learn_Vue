@@ -9,6 +9,9 @@
         .completed {
             text-decoration: line-through;
         }
+        .selected {
+            color: red;
+        }
     </style>
 </head>
 <body>
@@ -18,7 +21,7 @@
     <span v-if="!count" style="color: red">Please Input Your Task.</span>
 
     <ul>
-        <li v-for='todo in todos' :key='todo.id'>
+        <li v-for='todo in filtredTodos' :key='todo.id'>
             <span v-bind:class="{completed: todo.completed}" v-on:dblclick="editTodo(todo)">{{ todo.title }}</span>
             <input v-if="!todo.completed" type="button" value="Mark as Done" v-on:click="markAsCompleted(todo)" >
             <input v-if="todo.completed" type="button" value="Mark as Todo" v-on:click="markAsCompleted(todo)" >
@@ -36,6 +39,24 @@
                value="Mark all as done"
                v-on:click="markAllAsCompleted"/>
     </div>
+    <div>
+        <span> {{leftTodosCount}} tasks to be finished.</span>
+        <span> Show：
+            <input type="button" value="All"
+                    v-bind:class="{selected: intention === 'all'}"
+                    @click="intention='all'"/>
+            <input type="button" value="Doing"
+                   v-bind:class="{selected: intention === 'doing'}"
+                    @click="intention='doing'"/>
+            <input type="button" value="Done"
+                   v-bind:class="{selected: intention === 'done'}"
+                   @click="intention='finished'"/>
+            <input type="button" value="Clear All">
+            <input type="button" value="Clear Done">
+        </span>
+
+    </div>
+
 
 </div>
 </body>
@@ -50,7 +71,8 @@
                 new_todo: '',
                 completed: false,
                 deleted_todo: [],
-                edited_todo: null
+                edited_todo: null,
+                intention: 'all'
             }
         },
         methods: {
@@ -110,6 +132,18 @@
         computed: {
             count: function (todo) {
                 return this.new_todo.length
+            },
+            leftTodosCount: function () {
+                return this.todos.filter(todo => !todo.completed).length;
+            },
+            filtredTodos: function () {
+                if (this.intention === 'all') {
+                    return this.todos;
+                } else if (this.intention === 'doing') {
+                    return this.todos.filter(todo => !todo.completed)
+                } else {
+                    return this.todos.filter(todo => todo.completed)
+                }
             }
         },
         directives: {

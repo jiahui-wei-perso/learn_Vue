@@ -22,10 +22,15 @@
             <span v-bind:class="{completed: todo.completed}">{{ todo.title }}</span>
             <input v-if="!todo.completed" type="button" value="Mark as Done" v-on:click="markAsCompleted(todo)" >
             <input v-if="todo.completed" type="button" value="Mark as Todo" v-on:click="markAsCompleted(todo)" >
-            <input type="button" value="Delete">
+            <input type="button" value="Delete" v-on:click="deleteTodo(todo)">
             <input type="text" value="Edit"/>
         </li>
     </ul>
+    <div v-if="deleted_todo.length">
+        <br>
+        <input type="button" value="Undo" v-on:click="restoreTodo"/>
+    </div>
+
 </div>
 </body>
 <script src="https://cdn.bootcss.com/vue/2.5.16/vue.js"></script>
@@ -37,7 +42,8 @@
             return {
                 todos: [],
                 new_todo: '',
-                completed: false
+                completed: false,
+                deleted_todo: []
             }
         },
         methods: {
@@ -52,12 +58,25 @@
             addTodo: function () {
                 if (this.new_todo.length > 0) {
                     this.todos.push({id: id++, title: this.new_todo, completed: false});
-                    this.newTodoTitle = ''
                 }
 
             },
             markAsCompleted: function (todo) {
+                // console.log(todo)
                 todo.completed = !todo.completed
+            },
+            deleteTodo: function (todo) {
+                // position = this.todos.indexOf(todo)
+                // console.log(todo)
+                this.deleted_todo.push(todo)
+
+                this.todos.splice(todo.id, 1)
+
+            },
+            restoreTodo: function () {
+                let res = this.deleted_todo.pop();
+                // console.log(res);
+                this.todos.splice(res.id, 0, res);
             }
         },
         computed: {

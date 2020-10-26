@@ -97,7 +97,7 @@
             },
             deleteTodo: function (todo) {
                 let index = this.todos.indexOf(todo)
-                // console.log(todo)
+                // console.log(todo, index)
                 this.deleted_todo.push([index, todo])
 
                 this.todos.splice(index, 1)
@@ -129,11 +129,11 @@
                 })
             },
             clearAll: function () {
-                this.deleted_todo = this.todos;
+                this.todos.map(todo => this.deleteTodo(todo));
                 this.todos = []
             },
             clearDone: function () {
-                this.deleted_todo = this.todos.filter(todo => todo.completed);
+                this.todos.filter(todo => todo.completed).map(todo => this.deleteTodo(todo));
                 this.todos = this.todos.filter(todo => !todo.completed)
             }
         },

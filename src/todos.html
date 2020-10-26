@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8">
+    <title>Vue Todo Tutorial</title>
+    <style>
+        .empty {
+            border-color: red;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+
+    <ul>
+        <li v-for='todo in todos' :key='todo.id'>
+            <span>{{ todo.title }}</span>
+            <input type="button" value="标为完成">
+            <input type="button" value="删除">
+            <input type="text" value="编辑 todo..."/>
+        </li>
+    </ul>
+</div>
+</body>
+<script src="https://cdn.bootcss.com/vue/2.5.16/vue.js"></script>
+<script>
+    var app = new Vue({
+        el: '#app',
+        data: function () {
+            return {
+                todos: [
+                    {id: 0, title: '学习 Vue'},
+                    {id: 1, title: '整个牛项目'},
+                    {id: 2, title: '迎娶白富美走上人生巅峰'},
+                ]
+            }
+        },
+        methods: {
+            send: function () {
+                if (this.value.length > 0) {
+                    alert('发送成功！');
+                    this.value = ''
+                }else{
+                    alert('Please input sth before submitting.')
+                }
+            }
+        },
+        computed: {
+            count: function () {
+                return this.value.length
+            }
+        }
+    })
+</script>
+</html>
+

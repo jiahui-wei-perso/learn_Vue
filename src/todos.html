@@ -128,7 +128,8 @@
                 })
             },
             clearAll: function () {
-                this.todos.map(todo => this.deleteTodo(todo));
+                let todos_list = this.todos;
+                todos_list.map(todo => this.deleted_todo.push([this.todos.indexOf(todo), todo]));
                 this.todos = []
             },
             clearDone: function () {

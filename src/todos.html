@@ -35,7 +35,7 @@
         <input type="button" value="Undo" v-on:click="restoreTodo"/>
     </div>
     <div>
-        <input type="button"
+        <input type="button" v-if="leftTodosCount"
                value="Mark all as done"
                v-on:click="markAllAsCompleted"/>
     </div>
@@ -50,9 +50,9 @@
                     @click="intention='doing'"/>
             <input type="button" value="Done"
                    v-bind:class="{selected: intention === 'done'}"
-                   @click="intention='finished'"/>
-            <input type="button" value="Clear All">
-            <input type="button" value="Clear Done">
+                   @click="intention='done'"/>
+            <input type="button" value="Clear All" v-on:click="clearAll">
+            <input type="button" value="Clear Done" v-on:click="clearDone">
         </span>
 
     </div>
@@ -97,7 +97,6 @@
             },
             deleteTodo: function (todo) {
                 let index = this.todos.indexOf(todo)
-                // console.log(todo)
                 this.deleted_todo.push([index, todo])
 
                 this.todos.splice(index, 1)
@@ -127,6 +126,14 @@
                 this.todos.map( function (todo) {
                     todo.completed = true; // todo => todo.completed = true;
                 })
+            },
+            clearAll: function () {
+                this.todos.map(todo => this.deleteTodo(todo));
+                this.todos = []
+            },
+            clearDone: function () {
+                this.todos.filter(todo => todo.completed).map(todo => this.deleteTodo(todo));
+                this.todos = this.todos.filter(todo => !todo.completed)
             }
         },
         computed: {

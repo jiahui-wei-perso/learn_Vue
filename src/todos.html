@@ -6,6 +6,9 @@
         .empty {
             border-color: red;
         }
+        .completed {
+            text-decoration: line-through;
+        }
     </style>
 </head>
 <body>
@@ -16,8 +19,9 @@
 
     <ul>
         <li v-for='todo in todos' :key='todo.id'>
-            <span>{{ todo.title }}</span>
-            <input type="button" value="Mark as Done">
+            <span v-bind:class="{completed: todo.completed}">{{ todo.title }}</span>
+            <input v-if="!todo.completed" type="button" value="Mark as Done" v-on:click="markAsCompleted(todo)" >
+            <input v-if="todo.completed" type="button" value="Mark as Todo" v-on:click="markAsCompleted(todo)" >
             <input type="button" value="Delete">
             <input type="text" value="Edit"/>
         </li>
@@ -32,7 +36,8 @@
         data: function () {
             return {
                 todos: [],
-                new_todo: ''
+                new_todo: '',
+                completed: false
             }
         },
         methods: {
@@ -46,10 +51,13 @@
             },
             addTodo: function () {
                 if (this.new_todo.length > 0) {
-                    this.todos.push({id: id++, title: this.new_todo});
+                    this.todos.push({id: id++, title: this.new_todo, completed: false});
                     this.newTodoTitle = ''
                 }
 
+            },
+            markAsCompleted: function (todo) {
+                todo.completed = !todo.completed
             }
         },
         computed: {

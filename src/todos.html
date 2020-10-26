@@ -19,16 +19,22 @@
 
     <ul>
         <li v-for='todo in todos' :key='todo.id'>
-            <span v-bind:class="{completed: todo.completed}">{{ todo.title }}</span>
+            <span v-bind:class="{completed: todo.completed}" v-on:dblclick="editTodo(todo)">{{ todo.title }}</span>
             <input v-if="!todo.completed" type="button" value="Mark as Done" v-on:click="markAsCompleted(todo)" >
             <input v-if="todo.completed" type="button" value="Mark as Todo" v-on:click="markAsCompleted(todo)" >
             <input type="button" value="Delete" v-on:click="deleteTodo(todo)">
-            <input type="text" value="Edit"/>
+            <input type="text" v-if="edited_todo !== null && edited_todo.id === todo.id" v-model="todo.title"
+                   v-on:keyup.enter="editDone(todo)" v-on:keyup.esc="cancelEdit" v-focus="true" value="Edit"/>
         </li>
     </ul>
     <div v-if="deleted_todo.length">
         <br>
         <input type="button" value="Undo" v-on:click="restoreTodo"/>
+    </div>
+    <div>
+        <input type="button"
+               value="Mark all as done"
+               v-on:click="markAllAsCompleted"/>
     </div>
 
 </div>
@@ -43,7 +49,8 @@
                 todos: [],
                 new_todo: '',
                 completed: false,
-                deleted_todo: []
+                deleted_todo: [],
+                edited_todo: null
             }
         },
         methods: {
@@ -51,13 +58,14 @@
                 if (this.value.length > 0) {
                     alert('发送成功！');
                     this.value = ''
-                }else{
+                } else {
                     alert('Please input sth before submitting.')
                 }
             },
             addTodo: function () {
                 if (this.new_todo.length > 0) {
                     this.todos.push({id: id++, title: this.new_todo, completed: false});
+                    this.new_todo = ''
                 }
 
             },
@@ -77,11 +85,38 @@
                 let res = this.deleted_todo.pop();
                 // console.log(res);
                 this.todos.splice(res.id, 0, res);
+            },
+
+            editTodo: function (todo) {
+                this.edited_todo = {id: todo.id, title: todo.title, completed: todo.completed}
+            },
+            editDone: function (todo) {
+                if (todo.title.length === 0) {
+                    todo.title = this.edited_todo.title;
+                    this.deleteTodo(todo)
+                };
+                this.edited_todo = null
+            },
+            cancelEdit: function (todo) {
+                todo.title = this.edited_todo.title;
+                this.edited_todo = null
+            },
+            markAllAsCompleted: function () {
+                this.todos.map( function (todo) {
+                    todo.completed = true; // todo => todo.completed = true;
+                })
             }
         },
         computed: {
-            count: function () {
+            count: function (todo) {
                 return this.new_todo.length
+            }
+        },
+        directives: {
+            focus: {
+                inserted: function (el) {
+                    el.focus()
+                }
             }
         }
     })

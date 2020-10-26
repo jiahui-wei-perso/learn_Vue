@@ -96,17 +96,17 @@
                 todo.completed = !todo.completed
             },
             deleteTodo: function (todo) {
-                // position = this.todos.indexOf(todo)
+                let index = this.todos.indexOf(todo)
                 // console.log(todo)
-                this.deleted_todo.push(todo)
+                this.deleted_todo.push([index, todo])
 
-                this.todos.splice(todo.id, 1)
+                this.todos.splice(index, 1)
 
             },
             restoreTodo: function () {
                 let res = this.deleted_todo.pop();
                 // console.log(res);
-                this.todos.splice(res.id, 0, res);
+                this.todos.splice(res[0], 0, res[1]);
             },
 
             editTodo: function (todo) {

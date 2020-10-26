@@ -10,28 +10,29 @@
 </head>
 <body>
 <div id="app">
+    <input type="text" placeholder="Add todo" v-bind:class="{empty: !count}"
+           v-model="new_todo" v-on:keyup.enter="addTodo">
+    <span v-if="!count" style="color: red">Please Input Your Task.</span>
 
     <ul>
         <li v-for='todo in todos' :key='todo.id'>
             <span>{{ todo.title }}</span>
-            <input type="button" value="标为完成">
-            <input type="button" value="删除">
-            <input type="text" value="编辑 todo..."/>
+            <input type="button" value="Mark as Done">
+            <input type="button" value="Delete">
+            <input type="text" value="Edit"/>
         </li>
     </ul>
 </div>
 </body>
 <script src="https://cdn.bootcss.com/vue/2.5.16/vue.js"></script>
 <script>
+    let id = 0;
     var app = new Vue({
         el: '#app',
         data: function () {
             return {
-                todos: [
-                    {id: 0, title: '学习 Vue'},
-                    {id: 1, title: '整个牛项目'},
-                    {id: 2, title: '迎娶白富美走上人生巅峰'},
-                ]
+                todos: [],
+                new_todo: ''
             }
         },
         methods: {
@@ -42,11 +43,18 @@
                 }else{
                     alert('Please input sth before submitting.')
                 }
+            },
+            addTodo: function () {
+                if (this.new_todo.length > 0) {
+                    this.todos.push({id: id++, title: this.new_todo});
+                    this.newTodoTitle = ''
+                }
+
             }
         },
         computed: {
             count: function () {
-                return this.value.length
+                return this.new_todo.length
             }
         }
     })

@@ -97,7 +97,6 @@
             },
             deleteTodo: function (todo) {
                 let index = this.todos.indexOf(todo)
-                // console.log(todo, index)
                 this.deleted_todo.push([index, todo])
 
                 this.todos.splice(index, 1)

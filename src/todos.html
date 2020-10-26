@@ -24,12 +24,17 @@
             <input v-if="todo.completed" type="button" value="Mark as Todo" v-on:click="markAsCompleted(todo)" >
             <input type="button" value="Delete" v-on:click="deleteTodo(todo)">
             <input type="text" v-if="edited_todo !== null && edited_todo.id === todo.id" v-model="todo.title"
-                   v-on:keyup.enter="editDone(todo)" v-on:keyup.esc="cancelEdit" value="Edit"/>
+                   v-on:keyup.enter="editDone(todo)" v-on:keyup.esc="cancelEdit" v-focus="true" value="Edit"/>
         </li>
     </ul>
     <div v-if="deleted_todo.length">
         <br>
         <input type="button" value="Undo" v-on:click="restoreTodo"/>
+    </div>
+    <div>
+        <input type="button"
+               value="Mark all as done"
+               v-on:click="markAllAsCompleted"/>
     </div>
 
 </div>
@@ -53,7 +58,7 @@
                 if (this.value.length > 0) {
                     alert('发送成功！');
                     this.value = ''
-                }else{
+                } else {
                     alert('Please input sth before submitting.')
                 }
             },
@@ -86,19 +91,32 @@
                 this.edited_todo = {id: todo.id, title: todo.title, completed: todo.completed}
             },
             editDone: function (todo) {
-                this.edited_todo = null
-                if (todo.title.length===0) {
+                if (todo.title.length === 0) {
+                    todo.title = this.edited_todo.title;
                     this.deleteTodo(todo)
-                }
+                };
+                this.edited_todo = null
             },
             cancelEdit: function (todo) {
                 todo.title = this.edited_todo.title;
                 this.edited_todo = null
+            },
+            markAllAsCompleted: function () {
+                this.todos.map( function (todo) {
+                    todo.completed = true; // todo => todo.completed = true;
+                })
             }
         },
         computed: {
             count: function (todo) {
                 return this.new_todo.length
+            }
+        },
+        directives: {
+            focus: {
+                inserted: function (el) {
+                    el.focus()
+                }
             }
         }
     })
